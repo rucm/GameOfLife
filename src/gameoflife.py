@@ -3,7 +3,9 @@ import sys
 import glob
 from kivy.app import App
 from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.button import Button
 from kivy.lang import Builder
+from kivy.properties import StringProperty
 
 
 def resourcePath():

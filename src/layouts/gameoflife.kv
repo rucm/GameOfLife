@@ -1,8 +1,29 @@
 #:kivy 1.10
 
 <GameOfLife@BoxLayout>:
+    text: 'sample'
+
     padding: [10, 10, 10, 10]
-    Button1:
-        text: 'test'
-    Button2:
-        text: 'tests2'
+    canvas:
+        Color:
+            rgba: [0.3, 0.9, 0.3, 1]
+        Rectangle:
+            size: self.size
+    Label:
+        text: root.text
+    BoxLayout:
+        padding: [10, 10, 10, 10]
+        spacing: 10
+        orientation: 'vertical'
+        canvas:
+            Color:
+                rgba: [0.3, 0.3, 0.3, 0.6]
+            Rectangle:
+                size: self.size
+        ImageButton:
+            source: 'images/menu.png'
+            on_press: root.text = 'push image button'
+        Button:
+            text: 'test2'
+            on_press: root.text = 'push button'
+        
