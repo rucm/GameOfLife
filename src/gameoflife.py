@@ -5,6 +5,7 @@ from kivy.app import App
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
 from kivy.lang import Builder
+from kivy.uix.modalview import ModalView
 from kivy.properties import StringProperty
 
 
@@ -22,8 +23,15 @@ def loadStyle(dir_path):
         Builder.load_file(style)
 
 
-class GameOfLife(BoxLayout):
+class SampleModal(ModalView):
     pass
+
+
+class GameOfLife(BoxLayout):
+
+    def modal(self):
+        sample_modal = SampleModal()
+        sample_modal.open()
 
 
 class GameOfLifeApp(App):
