@@ -3,7 +3,7 @@
 <GameOfLife@BoxLayout>:
     padding: [10, 10, 10, 10]
     canvas.before:
-        BorderImage:
+        Rectangle:
             source: 'images/background.png'
             pos: self.pos
             size: self.size
@@ -14,7 +14,17 @@
             pos: self.parent.pos
             canvas.before:
                 Color:
-                    rgba: 0, 0, 0, 0.4
+                    rgba: 0, 0, 0, 0.5
+                Rectangle:
+                    size: self.size
+                    pos: self.pos
+        BoxLayout:
+            size_hint: 0.25, 0.1
+            pos_hint: {'bottom': 1, 'x': 0.375}
+            pos: self.parent.pos
+            canvas.before:
+                Color:
+                    rgba: 0, 0, 0, 0.5
                 Rectangle:
                     size: self.size
                     pos: self.pos
