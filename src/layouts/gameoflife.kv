@@ -1,43 +1,20 @@
 #:kivy 1.10
 
-<SampleModal>:
-    auto_dismiss: False
-    BoxLayout:
-        orientation: 'horizontal'
-        Label:
-            text: 'sample modal'
-            font_size: 48
-        BoxLayout:
-            padding: [10, 10, 10, 10]
-            Button:
-                text: 'close'
-                on_press: root.dismiss()
-
 <GameOfLife@BoxLayout>:
-    text: 'sample'
     padding: [10, 10, 10, 10]
-    canvas:
-        Color:
-            rgba: [0.3, 0.9, 0.3, 1]
-        Rectangle:
-            size: self.size
+    canvas.before:
+        BorderImage:
+            source: 'images/background.png'
             pos: self.pos
-    Label:
-        text: root.text
-    BoxLayout:
-        padding: [10, 10, 10, 10]
-        spacing: 10
-        orientation: 'vertical'
-        canvas:
-            Color:
-                rgba: [0.3, 0.3, 0.3, 1]
-            Rectangle:
-                size: self.size
-                pos: self.pos
-        ImageButton:
-            source: 'images/menu.png'
-            on_press: root.text = 'push image button'
-        Button:
-            text: 'test2'
-            on_press: root.modal()
-        
+            size: self.size
+    FloatLayout:
+        BoxLayout:
+            size_hint: 0.25, 1.0
+            pos_hint: {'right': 1}
+            pos: self.parent.pos
+            canvas.before:
+                Color:
+                    rgba: 0, 0, 0, 0.4
+                Rectangle:
+                    size: self.size
+                    pos: self.pos
