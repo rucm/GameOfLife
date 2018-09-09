@@ -8,8 +8,20 @@
 <ImageButton@Button>:
     source: None
     background_color: 0, 0, 0, 0
+    background_normal: ''
+    background_down: ''
+    on_press: self.background_color = (1, 1, 1, 0.5)
+    on_release: self.background_color = (0, 0, 0, 0)
 
     Image:
         source: root.source
         pos: root.pos
         size: root.size
+
+<Panel@BoxLayout>:
+    canvas.before:
+        Color:
+            rgba: 0, 0, 0, 0.5
+        Rectangle:
+            size: self.size
+            pos: self.pos
