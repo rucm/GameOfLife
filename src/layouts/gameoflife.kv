@@ -1,39 +1,32 @@
 #:kivy 1.10
 
+<OperatePanel@Panel>:
+    padding: [10, 10, 10, 10]
+    size_hint: 0.25, 0.1
+    pos_hint: {'bottom': 1, 'x': 0.375}
+    ImageButton:
+        source: 'images/play.png'
+    ImageButton:
+        source: 'images/stop.png'
+    ImageButton:
+        source: 'images/menu.png'
+
+<MenuPanel@Panel>:
+    size_hint: 0.25, 1.0
+    pos_hint: {'right': 1}
+
 <GameOfLife@BoxLayout>:
+    menu_panel: _menu_panel
+    operate_panel: _operate_panel
+
     padding: [10, 10, 10, 10]
     canvas.before:
         Rectangle:
             source: 'images/background.png'
             pos: self.pos
             size: self.size
-    canvas:
-        Color:
-            rgba: 0, 1, 0, 0.5
-        Rectangle:
-            pos: 10, 10
-            size: 10, 10
     FloatLayout:
-        Panel:
-            size_hint: 0.25, 1.0
-            pos_hint: {'right': 1}
-            pos: self.parent.pos
-        Panel:
-            size_hint: 0.25, 0.1
-            pos_hint: {'bottom': 1, 'x': 0.375}
-            pos: self.parent.pos
-            ImageButton:
-                id: play
-                pos_hint: {'center_x': 0.5, 'center_y': 0.5}
-                size_hint: 0.25, 0.75
-                source: 'images/play.png'
-            ImageButton:
-                id: stop
-                pos_hint: {'center_x': 0.5, 'center_y': 0.5}
-                size_hint: 0.25, 0.75
-                source: 'images/stop.png'
-            ImageButton:
-                id: menu
-                pos_hint: {'center_x': 0.5, 'center_y': 0.5}
-                size_hint: 0.25, 0.75
-                source: 'images/menu.png'
+        MenuPanel:
+            id: _menu_panel
+        OperatePanel:
+            id: _operate_panel

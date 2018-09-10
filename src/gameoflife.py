@@ -24,6 +24,18 @@ def load_style(dir_path):
         Builder.load_file(style)
 
 
+class Panel(BoxLayout):
+    pass
+
+
+class OperatePanel(Panel):
+    pass
+
+
+class MenuPanel(Panel):
+    pass
+
+
 class GameOfLife(BoxLayout):
     pass
 

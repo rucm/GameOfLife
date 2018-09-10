@@ -10,6 +10,7 @@
     background_color: 0, 0, 0, 0
     background_normal: ''
     background_down: ''
+    pos_hint: {'center_x': 0.5, 'center_y': 0.5}
     on_press: self.background_color = (1, 1, 1, 0.5)
     on_release: self.background_color = (0, 0, 0, 0)
 
@@ -19,6 +20,7 @@
         size: root.size
 
 <Panel@BoxLayout>:
+    pos: self.parent.pos
     canvas.before:
         Color:
             rgba: 0, 0, 0, 0.5
