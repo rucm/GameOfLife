@@ -1,6 +1,6 @@
 #:kivy 1.10
 
-<OperatePanel@Panel>:
+<OperatePanel>:
     padding: [10, 10, 10, 10]
     size_hint: 0.25, 0.1
     pos_hint: {'bottom': 1, 'x': 0.375}
@@ -11,11 +11,11 @@
     ImageButton:
         source: 'images/menu.png'
 
-<MenuPanel@Panel>:
+<MenuPanel>:
     size_hint: 0.25, 1.0
     pos_hint: {'right': 1}
 
-<GameOfLife@BoxLayout>:
+<GameOfLife>:
     menu_panel: _menu_panel
     operate_panel: _operate_panel
 
