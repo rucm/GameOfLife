@@ -8,6 +8,7 @@ from kivy.uix.button import Button
 from kivy.lang import Builder
 from kivy.uix.modalview import ModalView
 from kivy.properties import StringProperty
+from kivy.properties import ObjectProperty
 from kivy.resources import resource_add_path
 
 
@@ -29,15 +30,30 @@ class Panel(BoxLayout):
 
 
 class OperatePanel(Panel):
-    pass
+
+    def __init__(self, **kwargs):
+        self.register_event_type('on_test')
+        super().__init__(**kwargs)
+
+    def on_test(self):
+        pass
 
 
 class MenuPanel(Panel):
-    pass
+
+    def toggle(self, ed):
+        self.opacity = (self.opacity + 1) % 2
+        self.disabled = not self.disabled
 
 
 class GameOfLife(BoxLayout):
-    pass
+    operate_panel = ObjectProperty()
+    menu_panel = ObjectProperty()
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
+        self.operate_panel.bind(on_test=self.menu_panel.toggle)
 
 
 class GameOfLifeApp(App):
