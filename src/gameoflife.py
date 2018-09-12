@@ -10,6 +10,7 @@ from kivy.lang import Builder
 from kivy.uix.modalview import ModalView
 from kivy.properties import StringProperty
 from kivy.properties import ObjectProperty
+from kivy.animation import Animation
 from kivy.resources import resource_add_path
 
 
@@ -56,9 +57,31 @@ class OperatePanel(Panel):
 
 class MenuPanel(Panel):
 
+    def __init__(self, **kwargs):
+        super(MenuPanel, self).__init__(**kwargs)
+        self.state = 0
+
     def toggle(self, ed):
-        self.opacity = (self.opacity + 1) % 2
-        self.disabled = not self.disabled
+        state_list = ['in', 'out']
+        method = 'slide_{}'.format(state_list[self.state])
+        getattr(self, method)()
+        self.state = (self.state + 1) % 2
+
+    def slide_in(self):
+        animation = Animation(
+            pos_hint={'right': 1},
+            duration=0.5,
+            transition='out_cubic'
+        )
+        animation.start(self)
+
+    def slide_out(self):
+        animation = Animation(
+            pos_hint={'right': 2},
+            duration=0.5,
+            transition='in_cubic'
+        )
+        animation.start(self)
 
 
 class GameOfLife(BoxLayout):
