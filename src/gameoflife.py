@@ -1,6 +1,7 @@
 import os
 import sys
 import glob
+import re
 from kivy.logger import Logger
 from kivy.app import App
 from kivy.uix.boxlayout import BoxLayout
@@ -19,10 +20,24 @@ def resource_path():
 
 
 def load_style(dir_path):
+    """
+    実行ファイルをカレントディレクトリとして、
+    指定したディレクトリに存在するkvファイルを読み込む
+    """
     cur_path = os.path.dirname(os.path.abspath(__file__))
     style_files = glob.glob('{}/{}'.format(cur_path, dir_path))
     for style in style_files:
         Builder.load_file(style)
+
+
+def register_event(self):
+    """
+    'on_'で始まるメソッドを探してイベントとして登録する
+    """
+    pattern = re.compile('on_')
+    event_list = [e for e in dir(self.__class__) if pattern.match(e)]
+    for e in event_list:
+        self.register_event_type(e)
 
 
 class Panel(BoxLayout):
@@ -32,10 +47,10 @@ class Panel(BoxLayout):
 class OperatePanel(Panel):
 
     def __init__(self, **kwargs):
-        self.register_event_type('on_test')
         super().__init__(**kwargs)
+        register_event(self)
 
-    def on_test(self):
+    def on_menu(self):
         pass
 
 
@@ -52,8 +67,7 @@ class GameOfLife(BoxLayout):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-
-        self.operate_panel.bind(on_test=self.menu_panel.toggle)
+        self.operate_panel.bind(on_menu=self.menu_panel.toggle)
 
 
 class GameOfLifeApp(App):
