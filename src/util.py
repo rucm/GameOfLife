@@ -3,6 +3,7 @@ import sys
 import glob
 import re
 from kivy.lang import Builder
+from kivy.event import EventDispatcher
 
 
 def resource_path():
@@ -13,21 +14,26 @@ def resource_path():
 
 def load_style(dir_path):
     """
-    実行ファイルをカレントディレクトリとして、
     指定したディレクトリに存在するkvファイルを読み込む
     """
-    print(__file__)
-    cur_path = os.path.dirname(os.path.abspath(__file__))
-    style_files = glob.glob('{}/{}'.format(cur_path, dir_path))
+    style_files = glob.glob(dir_path)
     for style in style_files:
         Builder.load_file(style)
 
 
-def register_event(self):
+def register_event(handler):
     """
     'on_'で始まるメソッドを探してイベントとして登録する
+    __init__メソッドに付けるデコレータ
     """
-    pattern = re.compile('on_')
-    event_list = [e for e in dir(self.__class__) if pattern.match(e)]
-    for e in event_list:
-        self.register_event_type(e)
+
+    def wrapper(self, **kwargs):
+        if not isinstance(self, EventDispatcher):
+            raise TypeError('This class does not inherit EventDispatcher')
+        pattern = re.compile('on_')
+        event_list = [e for e in dir(self.__class__) if pattern.match(e)]
+        for e in event_list:
+            self.register_event_type(e)
+        return handler(self, **kwargs)
+
+    return wrapper

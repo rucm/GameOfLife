@@ -1,7 +1,4 @@
 import os
-import sys
-import glob
-import re
 from kivy.logger import Logger
 from kivy.app import App
 from kivy.uix.boxlayout import BoxLayout
@@ -22,9 +19,9 @@ class Panel(BoxLayout):
 
 class OperatePanel(Panel):
 
+    @register_event
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        register_event(self)
 
     def on_menu(self):
         pass
@@ -76,6 +73,8 @@ class GameOfLifeApp(App):
 
 if __name__ == '__main__':
     resource_add_path(resource_path())
-    load_style('layouts/*')
+
+    cur_path = os.path.dirname(os.path.abspath(__file__))
+    load_style(cur_path + '/layouts/*')
 
     GameOfLifeApp().run()
