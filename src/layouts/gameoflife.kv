@@ -3,7 +3,7 @@
 <OperatePanel>:
     padding: [10, 10, 10, 10]
     size_hint: 0.25, 0.1
-    pos_hint: {'bottom': 1, 'x': 0.375}
+    pos_hint: {'bottom': 1, 'x': 0}
     ImageButton:
         source: 'images/play.png'
     ImageButton:
@@ -13,12 +13,14 @@
         on_press: root.dispatch('on_menu')
 
 <MenuPanel>:
-    size_hint: 0.25, 1.0
+    size_hint: 0.32, 1.0
     pos_hint: {'right': 2}
 
 
 <GameOfLifePanel>:
-    size_hint: 1.0, 1.0
+    size: (512, 512)
+    size_hint: (None, None)
+    pos_hint: {'top': 1, 'left': 1}
 
 
 <GameOfLife>:
