@@ -1,17 +1,14 @@
 import os
 from itertools import product
-from kivy.logger import Logger
-from kivy.app import App
-from kivy.uix.boxlayout import BoxLayout
-from kivy.uix.button import Button
-from kivy.uix.modalview import ModalView
-from kivy.properties import StringProperty
-from kivy.properties import ObjectProperty
+
 from kivy.animation import Animation
-from kivy.resources import resource_add_path
-from kivy.event import EventDispatcher
+from kivy.app import App
 from kivy.clock import Clock
 from kivy.graphics import Color, Rectangle
+from kivy.logger import Logger
+from kivy.properties import ObjectProperty, StringProperty
+from kivy.resources import resource_add_path
+from kivy.uix.boxlayout import BoxLayout
 
 from util import *
 
