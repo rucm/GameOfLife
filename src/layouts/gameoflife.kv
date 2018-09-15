@@ -17,6 +17,10 @@
     pos_hint: {'right': 2}
 
 
+<GameOfLifePanel>:
+    size_hint: 1.0, 1.0
+
+
 <GameOfLife>:
     menu_panel: _menu_panel
     operate_panel: _operate_panel
@@ -28,6 +32,7 @@
             pos: self.pos
             size: self.size
     FloatLayout:
+        GameOfLifePanel:
         MenuPanel:
             id: _menu_panel
         OperatePanel:

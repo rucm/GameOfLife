@@ -1,4 +1,5 @@
 import os
+from itertools import product
 from kivy.logger import Logger
 from kivy.app import App
 from kivy.uix.boxlayout import BoxLayout
@@ -9,6 +10,8 @@ from kivy.properties import ObjectProperty
 from kivy.animation import Animation
 from kivy.resources import resource_add_path
 from kivy.event import EventDispatcher
+from kivy.clock import Clock
+from kivy.graphics import Color, Rectangle
 
 from util import *
 
@@ -54,6 +57,21 @@ class MenuPanel(Panel):
             transition='in_cubic'
         )
         animation.start(self)
+
+
+class GameOfLifePanel(Panel):
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        Clock.schedule_once(self.init_cells, 1)
+
+    def init_cells(self, dt):
+        row, col = int(self.height / 10), int(self.width / 10)
+        with self.canvas:
+            Color(0, 1, 0, 0.8)
+            for x, y in product(range(col), range(row)):
+                pos = (x * 9 + self.pos[0] + 1, y * 9 + self.pos[1] + 1)
+                Rectangle(size=(8, 8), pos=pos)
 
 
 class GameOfLife(BoxLayout):
