@@ -1,9 +1,6 @@
 #:kivy 1.10
 
 
-<Button>:
-    background_color: 0, 0.59, 0.53, 1.0
-
 <ImageButton@Button>:
     source: None
     background_color: 0, 0, 0, 0
@@ -26,3 +23,9 @@
         Rectangle:
             size: self.size
             pos: self.pos
+
+
+<Cell>:
+    source: self.status_image[self.state]
+    status_image: ['images/dead_cell.png', 'images/live_cell.png']
+    state: 0
