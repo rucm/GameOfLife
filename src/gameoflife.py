@@ -17,6 +17,7 @@ from kivy.resources import resource_add_path
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.image import Image
+from kivy.graphics import Ellipse
 
 from util import *
 
@@ -80,7 +81,7 @@ class CellGrid(GridLayout):
         super().__init__(**kwargs)
         self.cols = 60
         self.rows = 40
-        self.init_cells()
+        # self.init_cells()
         # Clock.schedule_once(self.schedule, 1)
 
     def schedule(self, dt):
@@ -94,9 +95,20 @@ class CellGrid(GridLayout):
             self.add_widget(cell)
 
     def random_init(self, ed):
-        for child in self.children:
-            r = random.randrange(100)
-            child.state = 1 if r < 60 else 0
+        result = timeit.timeit(self._random_init, number=1)
+        Logger.info('Draw cells: {}'.format(result))
+
+    def _random_init(self):
+        self.canvas.clear()
+        cell_size = (self.size[0] / self.cols, self.size[1] / self.rows)
+        with self.canvas:
+            Color(0, 1, 0, 0.6)
+            for x, y in product(range(self.cols), range(self.rows)):
+                if random.randrange(100) < 60:
+                    continue
+                _x = x * cell_size[0] + self.pos[0]
+                _y = y * cell_size[1] + self.pos[1]
+                Ellipse(size=cell_size, pos=(_x, _y))
 
 
 class GameOfLife(BoxLayout):
