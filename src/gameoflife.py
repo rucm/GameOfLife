@@ -1,4 +1,5 @@
 import os
+import timeit
 from itertools import product
 
 from kivy.animation import Animation
@@ -6,9 +7,15 @@ from kivy.app import App
 from kivy.clock import Clock
 from kivy.graphics import Color, Rectangle
 from kivy.logger import Logger
-from kivy.properties import ObjectProperty, StringProperty
+from kivy.properties import (
+    ObjectProperty,
+    StringProperty,
+    NumericProperty
+)
 from kivy.resources import resource_add_path
 from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.gridlayout import GridLayout
+from kivy.uix.image import Image
 
 from util import *
 
@@ -56,19 +63,31 @@ class MenuPanel(Panel):
         animation.start(self)
 
 
-class GameOfLifePanel(Panel):
+class Cell(Image):
+    state = NumericProperty()
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        Clock.schedule_once(self.init_cells, 1)
 
-    def init_cells(self, dt):
-        row, col = int(self.height / 10), int(self.width / 10)
-        with self.canvas:
-            Color(0, 1, 0, 0.8)
-            for x, y in product(range(col), range(row)):
-                pos = (x * 9 + self.pos[0] + 1, y * 9 + self.pos[1] + 1)
-                Rectangle(size=(8, 8), pos=pos)
+
+class CellGrid(GridLayout):
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.cols = 60
+        self.rows = 40
+        self.init_cells()
+        # Clock.schedule_once(self.schedule, 1)
+
+    def schedule(self, dt):
+        result = timeit.timeit(self.init_cells, number=1)
+        Logger.info('Draw cells: {}'.format(result))
+
+    def init_cells(self):
+        for x, y in product(range(self.cols), range(self.rows)):
+            cell = Cell()
+            cell.state = (x * y) % 2
+            self.add_widget(cell)
 
 
 class GameOfLife(BoxLayout):
