@@ -1,5 +1,6 @@
 import os
 import timeit
+import random
 from itertools import product
 
 from kivy.animation import Animation
@@ -31,6 +32,9 @@ class OperatePanel(Panel):
         super().__init__(**kwargs)
 
     def on_menu(self):
+        pass
+
+    def on_play(self):
         pass
 
 
@@ -89,13 +93,20 @@ class CellGrid(GridLayout):
             cell.state = (x * y) % 2
             self.add_widget(cell)
 
+    def random_init(self, ed):
+        for child in self.children:
+            r = random.randrange(100)
+            child.state = 1 if r < 60 else 0
+
 
 class GameOfLife(BoxLayout):
+    cell_grid = ObjectProperty()
     operate_panel = ObjectProperty()
     menu_panel = ObjectProperty()
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+        self.operate_panel.bind(on_play=self.cell_grid.random_init)
         self.operate_panel.bind(on_menu=self.menu_panel.toggle)
 
 

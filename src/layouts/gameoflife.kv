@@ -6,6 +6,7 @@
     pos_hint: {'bottom': 1, 'center_x': 0.5}
     ImageButton:
         source: 'images/play.png'
+        on_press: root.dispatch('on_play')
     ImageButton:
         source: 'images/stop.png'
     ImageButton:
@@ -34,9 +35,9 @@
 
 
 <GameOfLife>:
-    menu_panel: _menu_panel
-    operate_panel: _operate_panel
-
+    cell_grid: cell_grid
+    menu_panel: menu_panel
+    operate_panel: operate_panel
     canvas.before:
         Rectangle:
             source: 'images/background.png'
@@ -44,7 +45,8 @@
             size: self.size
     FloatLayout:
         CellGrid:
+            id: cell_grid
         MenuPanel:
-            id: _menu_panel
+            id: menu_panel
         OperatePanel:
-            id: _operate_panel
+            id: operate_panel
