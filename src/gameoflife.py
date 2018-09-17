@@ -26,6 +26,7 @@ from util import *
 
 class Panel(BoxLayout):
 
+    @register_event
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
@@ -35,7 +36,6 @@ class Panel(BoxLayout):
 
 class OperatePanel(Panel):
 
-    @register_event
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
@@ -79,36 +79,40 @@ class CellGridPanel(Panel):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.cols = 60
-        self.rows = 40
 
-    def set_grid(self, cols, rows):
-        self.cols = cols
-        self.rows = rows
+    def random_init(self, obj):
+        self.core.randomize()
+        self.update_grid()
 
-    def random_init(self, core, obj):
-        core.randomize()
+    def update_grid(self):
         self.canvas.clear()
-        cell_size = (self.size[0] / self.cols, self.size[1] / self.rows)
-        with self.canvas:
-            Color(0, 1, 0, 0.6)
-            for x, y in product(range(self.cols), range(self.rows)):
-                if not core[x, y]:
-                    continue
-                _x = x * cell_size[0] + self.pos[0]
-                _y = y * cell_size[1] + self.pos[1]
-                Ellipse(size=cell_size, pos=(_x, _y))
+        w, h = self.size[0] / self.core.cols, self.size[1] / self.core.rows
+        self.canvas.add(Color(0, 1, 0, 0.8))
+        for x, y in product(range(self.cols), range(self.rows)):
+            if self.core[x, y]:
+                _x = x * w + self.pos[0]
+                _y = y * h + self.pos[1]
+                self.canvas.add(Ellipse(size=(w, h), pos=(_x, _y)))
 
 
 class GameOfLife(BoxLayout):
     core = GameOfLifeCore(60, 40)
-    cell_grid = ObjectProperty(CellGridPanel)
-    operate = ObjectProperty(OperatePanel)
-    menu = ObjectProperty(MenuPanel)
+    cell_grid = ObjectProperty()
+    operate = ObjectProperty()
+    menu = ObjectProperty()
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        Logger.info(self.ids)
+        self.set_core()
+        self.operate.bind(on_menu=self.menu.toggle)
+        self.operate.bind(on_play=self.cell_grid.random_init)
+
+    # Panelクラスを継承しているクラスにcoreをセットする
+    def set_core(self):
+        for panel in self.__dict__.values():
+            Logger.info(panel)
+            if isinstance(panel, Panel):
+                panel.set_core(self.core)
 
 
 class GameOfLifeApp(App):
