@@ -83,7 +83,7 @@ class GameOfLifeMask:
         for i in range(self.rows):
             mask[(i + 1) * self.cols - 1] = False
         return mask
-    
+
     def _create_up_left(self):
         mask = mybitarray(self.cols * self.rows)
         mask.setall(True)
@@ -92,7 +92,7 @@ class GameOfLifeMask:
         for i in range(self.cols):
             mask[-i] = False
         return mask
-    
+
     def _create_down_left(self):
         mask = mybitarray(self.cols * self.rows)
         mask.setall(True)
