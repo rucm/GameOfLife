@@ -2,6 +2,7 @@ import os
 import timeit
 import random
 from itertools import product
+from functools import partial
 
 from kivy.animation import Animation
 from kivy.app import App
@@ -19,11 +20,17 @@ from kivy.uix.gridlayout import GridLayout
 from kivy.uix.image import Image
 from kivy.graphics import Ellipse
 
+from core import GameOfLifeCore
 from util import *
 
 
 class Panel(BoxLayout):
-    pass
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
+    def set_core(self, core):
+        self.core = core
 
 
 class OperatePanel(Panel):
@@ -68,43 +75,25 @@ class MenuPanel(Panel):
         animation.start(self)
 
 
-class Cell(Image):
-    state = NumericProperty()
-
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-
-
-class CellGrid(GridLayout):
+class CellGridPanel(Panel):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.cols = 60
         self.rows = 40
-        # self.init_cells()
-        # Clock.schedule_once(self.schedule, 1)
 
-    def schedule(self, dt):
-        result = timeit.timeit(self.init_cells, number=1)
-        Logger.info('Draw cells: {}'.format(result))
+    def set_grid(self, cols, rows):
+        self.cols = cols
+        self.rows = rows
 
-    def init_cells(self):
-        for x, y in product(range(self.cols), range(self.rows)):
-            cell = Cell()
-            cell.state = (x * y) % 2
-            self.add_widget(cell)
-
-    def random_init(self, ed):
-        result = timeit.timeit(self._random_init, number=1)
-        Logger.info('Draw cells: {}'.format(result))
-
-    def _random_init(self):
+    def random_init(self, core, obj):
+        core.randomize()
         self.canvas.clear()
         cell_size = (self.size[0] / self.cols, self.size[1] / self.rows)
         with self.canvas:
             Color(0, 1, 0, 0.6)
             for x, y in product(range(self.cols), range(self.rows)):
-                if random.randrange(100) < 60:
+                if not core[x, y]:
                     continue
                 _x = x * cell_size[0] + self.pos[0]
                 _y = y * cell_size[1] + self.pos[1]
@@ -112,14 +101,14 @@ class CellGrid(GridLayout):
 
 
 class GameOfLife(BoxLayout):
-    cell_grid = ObjectProperty()
-    operate_panel = ObjectProperty()
-    menu_panel = ObjectProperty()
+    core = GameOfLifeCore(60, 40)
+    cell_grid = ObjectProperty(CellGridPanel)
+    operate = ObjectProperty(OperatePanel)
+    menu = ObjectProperty(MenuPanel)
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.operate_panel.bind(on_play=self.cell_grid.random_init)
-        self.operate_panel.bind(on_menu=self.menu_panel.toggle)
+        Logger.info(self.ids)
 
 
 class GameOfLifeApp(App):

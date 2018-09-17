@@ -18,35 +18,29 @@
     pos_hint: {'right': 2}
 
 
-<CellGrid>:
-    padding: [1, 1, 1, 1]
-    spacing: [1, 1]
-    cols: self.cols
-    pos: self.parent.pos
+<CellGridPanel>:
     size: (780, 520)
     size_hint: (None, None)
     pos_hint: {'center_x': 0.5, 'center_y': 0.55}
-    canvas.before:
-        Color:
-            rgba: 0, 0, 0, 0.5
-        Rectangle:
-            size: self.size
-            pos: self.pos
+    GridLayout:
+        padding: [1, 1, 1, 1]
+        spacing: [1, 1]
+        cols: self.cols
 
 
 <GameOfLife>:
     cell_grid: cell_grid
-    menu_panel: menu_panel
-    operate_panel: operate_panel
+    menu: menu
+    operate: operate
     canvas.before:
         Rectangle:
             source: 'images/background.png'
             pos: self.pos
             size: self.size
     FloatLayout:
-        CellGrid:
+        CellGridPanel:
             id: cell_grid
         MenuPanel:
-            id: menu_panel
+            id: menu
         OperatePanel:
-            id: operate_panel
+            id: operate
