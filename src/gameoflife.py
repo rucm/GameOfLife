@@ -1,24 +1,18 @@
 import os
-import timeit
 import random
+import timeit
 from itertools import product
-from functools import partial
 
 from kivy.animation import Animation
 from kivy.app import App
 from kivy.clock import Clock
-from kivy.graphics import Color, Rectangle
+from kivy.graphics import Color, Ellipse, Rectangle
 from kivy.logger import Logger
-from kivy.properties import (
-    ObjectProperty,
-    StringProperty,
-    NumericProperty
-)
+from kivy.properties import NumericProperty, ObjectProperty, StringProperty
 from kivy.resources import resource_add_path
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.image import Image
-from kivy.graphics import Ellipse
 
 from core import GameOfLifeCore
 from util import *
@@ -43,6 +37,9 @@ class OperatePanel(Panel):
         pass
 
     def on_play(self):
+        pass
+
+    def on_stop(self):
         pass
 
 
@@ -84,6 +81,10 @@ class CellGridPanel(Panel):
         self.core.randomize()
         self.update_grid()
 
+    def next_step(self, obj):
+        self.core.next_step()
+        self.update_grid()
+
     def update_grid(self):
         self.canvas.clear()
         w, h = self.size[0] / self.core.cols, self.size[1] / self.core.rows
@@ -91,7 +92,7 @@ class CellGridPanel(Panel):
         for x, y in product(range(self.core.cols), range(self.core.rows)):
             if self.core[x, y]:
                 _x = x * w + self.pos[0]
-                _y = y * h + self.pos[1]
+                _y = self.height - (y + 1) * h + self.pos[1]
                 self.canvas.add(Ellipse(size=(w, h), pos=(_x, _y)))
 
 
@@ -106,6 +107,7 @@ class GameOfLife(BoxLayout):
         self.set_core()
         self.operate.bind(on_menu=self.menu.toggle)
         self.operate.bind(on_play=self.cell_grid.random_init)
+        self.operate.bind(on_stop=self.cell_grid.next_step)
 
     # Panelクラスを継承しているクラスにcoreをセットする
     def set_core(self):
