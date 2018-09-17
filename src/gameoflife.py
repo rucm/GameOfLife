@@ -88,7 +88,7 @@ class CellGridPanel(Panel):
         self.canvas.clear()
         w, h = self.size[0] / self.core.cols, self.size[1] / self.core.rows
         self.canvas.add(Color(0, 1, 0, 0.8))
-        for x, y in product(range(self.cols), range(self.rows)):
+        for x, y in product(range(self.core.cols), range(self.core.rows)):
             if self.core[x, y]:
                 _x = x * w + self.pos[0]
                 _y = y * h + self.pos[1]
@@ -109,8 +109,8 @@ class GameOfLife(BoxLayout):
 
     # Panelクラスを継承しているクラスにcoreをセットする
     def set_core(self):
-        for panel in self.__dict__.values():
-            Logger.info(panel)
+        for key in GameOfLife.__dict__.keys():
+            panel = getattr(self, key)
             if isinstance(panel, Panel):
                 panel.set_core(self.core)
 
