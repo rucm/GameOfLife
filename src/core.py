@@ -36,7 +36,8 @@ class GameOfLifeCore(object):
 
     def next_step(self):
         # self.cells = self.mask.left(self.cells)
-        self.cells = self.mask.up_left(self.cells)
+        # self.cells = self.mask.up_left(self.cells)
+        self.cells = self.mask.down_left(self.cells)
 
     def randomize(self):
         length = self.cells.length()
@@ -52,6 +53,7 @@ class GameOfLifeMask:
 
         self.left_mask = self._create_left()
         self.up_left_mask = self._create_up_left()
+        self.down_left_mask = self._create_down_left()
 
     def left(self, cells):
         return (cells << 1) & self.left_mask
@@ -60,7 +62,7 @@ class GameOfLifeMask:
         return (cells << (self.cols + 1)) & self.up_left_mask
 
     def down_left(self, cells):
-        pass
+        return (cells >> (self.cols - 1)) & self.down_left_mask
 
     def right(self, cells):
         pass
@@ -85,17 +87,13 @@ class GameOfLifeMask:
         return mask
 
     def _create_up_left(self):
-        mask = mybitarray(self.cols * self.rows)
-        mask.setall(True)
-        for i in range(self.rows):
-            mask[(i + 1) * self.cols - 1] = False
+        mask = self._create_left()
         for i in range(self.cols):
             mask[-i] = False
         return mask
 
     def _create_down_left(self):
-        mask = mybitarray(self.cols * self.rows)
-        mask.setall(True)
-        for i in range(self.rows):
-            mask[(i + 1) * self.cols - 1] = False
+        mask = self._create_left()
+        for i in range(self.cols):
+            mask[i] = False
         return mask
