@@ -35,9 +35,8 @@ class GameOfLifeCore(object):
         self.cells.setall(False)
 
     def next_step(self):
-        # self.cells = self.mask.left(self.cells)
-        # self.cells = self.mask.up_left(self.cells)
-        self.cells = self.mask.down_left(self.cells)
+        self.cells = self.mask.down_right(self.cells)
+        # self.cells = self.mask.down_left(self.cells)
 
     def randomize(self):
         length = self.cells.length()
@@ -52,11 +51,25 @@ class GameOfLifeMask:
         self.rows = rows
 
         self.left_mask = self._create_left()
-        self.up_left_mask = self._create_up_left()
-        self.down_left_mask = self._create_down_left()
+        self.right_mask = self._create_right()
+        self.up_mask = self._create_up()
+        self.down_mask = self._create_down()
+        self.up_left_mask = self.left_mask & self.up_mask
+        self.down_left_mask = self.left_mask & self.down_mask
+        self.up_right_mask = self.right_mask & self.up_mask
+        self.down_right_mask = self.right_mask & self.down_mask
 
     def left(self, cells):
         return (cells << 1) & self.left_mask
+
+    def right(self, cells):
+        return (cells >> 1) & self.right_mask
+
+    def up(self, cells):
+        return (cells << self.cols) & self.up_mask
+
+    def down(self, cells):
+        return (cells >> self.cols) & self.up_mask
 
     def up_left(self, cells):
         return (cells << (self.cols + 1)) & self.up_left_mask
@@ -64,20 +77,11 @@ class GameOfLifeMask:
     def down_left(self, cells):
         return (cells >> (self.cols - 1)) & self.down_left_mask
 
-    def right(self, cells):
-        pass
-
     def up_right(self, cells):
-        pass
+        return (cells << (self.cols - 1)) & self.up_right_mask
 
     def down_right(self, cells):
-        pass
-
-    def up(self, cells):
-        pass
-
-    def down(self, cells):
-        pass
+        return (cells >> (self.cols + 1)) & self.down_right_mask
 
     def _create_left(self):
         mask = mybitarray(self.cols * self.rows)
@@ -86,14 +90,23 @@ class GameOfLifeMask:
             mask[(i + 1) * self.cols - 1] = False
         return mask
 
-    def _create_up_left(self):
-        mask = self._create_left()
+    def _create_right(self):
+        mask = mybitarray(self.cols * self.rows)
+        mask.setall(True)
+        for i in range(self.rows):
+            mask[i * self.cols] = False
+        return mask
+
+    def _create_up(self):
+        mask = mybitarray(self.cols * self.rows)
+        mask.setall(True)
         for i in range(self.cols):
             mask[-i] = False
         return mask
 
-    def _create_down_left(self):
-        mask = self._create_left()
+    def _create_down(self):
+        mask = mybitarray(self.cols * self.rows)
+        mask.setall(True)
         for i in range(self.cols):
             mask[i] = False
         return mask
