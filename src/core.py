@@ -35,8 +35,28 @@ class GameOfLifeCore(object):
         self.cells.setall(False)
 
     def next_step(self):
-        self.cells = self.mask.down_right(self.cells)
-        # self.cells = self.mask.down_left(self.cells)
+        c = [self.mask.left(self.cells)]
+        c.append(self.mask.right(self.cells))
+        c.append(self.mask.up(self.cells))
+        c.append(self.mask.down(self.cells))
+        c.append(self.mask.up_left(self.cells))
+        c.append(self.mask.down_left(self.cells))
+        c.append(self.mask.up_right(self.cells))
+        c.append(self.mask.down_right(self.cells))
+
+        s0 = ~(c[0] | c[1])
+        s1 = c[0] ^ c[1]
+        s2 = c[0] & c[1]
+        s3 = mybitarray(self.cols * self.rows)
+        s3.setall(False)
+
+        for _c in c[2:]:
+            s3 = (s3 & ~_c) | (s2 & _c)
+            s2 = (s2 & ~_c) | (s1 & _c)
+            s1 = (s1 & ~_c) | (s0 & _c)
+            s0 = s0 & ~_c
+
+        self.cells = (~self.cells & s3) | (self.cells & (s2 | s3))
 
     def randomize(self):
         length = self.cells.length()
