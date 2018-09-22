@@ -88,16 +88,21 @@ class CellGridPanel(Panel):
     def update_grid(self):
         self.canvas.clear()
         w, h = self.size[0] / self.core.cols, self.size[1] / self.core.rows
-        self.canvas.add(Color(0, 1, 0, 0.8))
-        for x, y in product(range(self.core.cols), range(self.core.rows)):
+        with self.canvas:
+            Color(0, 1, 0, 0.8)
+            field = list(product(range(self.core.cols), range(self.core.rows)))
+            cells = map(lambda coords: self.create_cell(*coords, w, h), field)
+            [c for c in cells if c is not None]
+
+    def create_cell(self, x, y, w, h):
             if self.core[x, y]:
                 _x = x * w + self.pos[0]
                 _y = self.height - (y + 1) * h + self.pos[1]
-                self.canvas.add(Ellipse(size=(w, h), pos=(_x, _y)))
+                return Ellipse(size=(w, h), pos=(_x, _y))
 
 
 class GameOfLife(BoxLayout):
-    core = GameOfLifeCore(60, 40)
+    core = GameOfLifeCore(120, 80)
     cell_grid = ObjectProperty()
     operate = ObjectProperty()
     menu = ObjectProperty()
