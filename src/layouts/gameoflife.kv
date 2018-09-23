@@ -4,11 +4,16 @@
     padding: [10, 10, 10, 10]
     size_hint: 0.25, 0.1
     pos_hint: {'bottom': 1, 'center_x': 0.5}
-    ImageButton:
-        source: 'images/play.png'
+    ToggleImageButton:
+        id: play
+        normal: 'images/play.png'
+        down: 'images/play_down.png'
         on_press: root.dispatch('on_play')
-    ImageButton:
-        source: 'images/stop.png'
+    ToggleImageButton:
+        id: stop
+        disabled: True
+        normal: 'images/stop.png'
+        down: 'images/stop_down.png'
         on_press: root.dispatch('on_stop')
     ImageButton:
         source: 'images/random.png'

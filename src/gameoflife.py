@@ -37,10 +37,12 @@ class OperatePanel(Panel):
         pass
 
     def on_play(self):
-        pass
+        self.ids['play'].disabled = True
+        self.ids['stop'].disabled = False
 
     def on_stop(self):
-        pass
+        self.ids['play'].disabled = False
+        self.ids['stop'].disabled = True
 
     def on_random(self):
         pass
@@ -105,10 +107,10 @@ class CellGridPanel(Panel):
             list(cells)
 
     def create_cell(self, x, y, w, h):
-            if self.core[x, y]:
-                _x = x * w + self.pos[0]
-                _y = self.height - (y + 1) * h + self.pos[1]
-                return Ellipse(size=(w, h), pos=(_x, _y))
+        if self.core[x, y]:
+            _x = x * w + self.pos[0]
+            _y = self.height - (y + 1) * h + self.pos[1]
+            return Ellipse(size=(w, h), pos=(_x, _y))
 
 
 class GameOfLife(BoxLayout):
