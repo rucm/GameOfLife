@@ -1,150 +1,132 @@
-import os
-import random
-import timeit
-from itertools import product
-
-from kivy.animation import Animation
-from kivy.app import App
-from kivy.clock import Clock
-from kivy.graphics import Color, Ellipse, Rectangle
-from kivy.logger import Logger
-from kivy.properties import NumericProperty, ObjectProperty, StringProperty
-from kivy.resources import resource_add_path
-from kivy.uix.boxlayout import BoxLayout
-from kivy.uix.gridlayout import GridLayout
-from kivy.uix.image import Image
-
-from core import GameOfLifeCore
-from util import *
+from bitarray import bitarray
+from random import randrange
 
 
-class Panel(BoxLayout):
+class mybitarray(bitarray):
 
-    @register_event
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
+    def __lshift__(self, count):
+        return self[count:] + type(self)('0') * count
 
-    def set_core(self, core):
-        self.core = core
+    def __rshift__(self, count):
+        return type(self)('0') * count + self[:-count]
 
-
-class OperatePanel(Panel):
-
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-
-    def on_menu(self):
-        pass
-
-    def on_play(self):
-        self.ids['play'].disabled = True
-        self.ids['stop'].disabled = False
-
-    def on_stop(self):
-        self.ids['play'].disabled = False
-        self.ids['stop'].disabled = True
-
-    def on_random(self):
-        pass
+    def __repr__(self):
+        return "{}('{}')".format(type(self).__name__, self.to01())
 
 
-class MenuPanel(Panel):
+class Core(object):
 
-    def __init__(self, **kwargs):
-        super(MenuPanel, self).__init__(**kwargs)
-        self.state = 0
+    def __init__(self, cols, rows):
+        self.mask = Mask(cols, rows)
+        self.cols = cols
+        self.rows = rows
+        self.cells = mybitarray(cols * rows)
+        self.cells.setall(False)
 
-    def toggle(self, ed):
-        state_list = ['in', 'out']
-        method = 'slide_{}'.format(state_list[self.state])
-        getattr(self, method)()
-        self.state = (self.state + 1) % 2
+    def __getitem__(self, coords):
+        index = coords[1] * self.cols + coords[0]
+        return self.cells[index]
 
-    def slide_in(self):
-        animation = Animation(
-            pos_hint={'right': 1},
-            duration=0.5,
-            transition='out_cubic'
-        )
-        animation.start(self)
+    def __setitem__(self, coords, value):
+        index = coords[1] * self.cols + coords[0]
+        self.cells[index] = value
 
-    def slide_out(self):
-        animation = Animation(
-            pos_hint={'right': 2},
-            duration=0.5,
-            transition='in_cubic'
-        )
-        animation.start(self)
+    def reset(self):
+        self.cells.setall(False)
 
+    def next_step(self):
+        c = [self.mask.left(self.cells)]
+        c.append(self.mask.right(self.cells))
+        c.append(self.mask.up(self.cells))
+        c.append(self.mask.down(self.cells))
+        c.append(self.mask.up_left(self.cells))
+        c.append(self.mask.down_left(self.cells))
+        c.append(self.mask.up_right(self.cells))
+        c.append(self.mask.down_right(self.cells))
 
-class CellGridPanel(Panel):
+        s0 = ~(c[0] | c[1])
+        s1 = c[0] ^ c[1]
+        s2 = c[0] & c[1]
+        s3 = mybitarray(self.cols * self.rows)
+        s3.setall(False)
 
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
+        for _c in c[2:]:
+            s3 = (s3 & ~_c) | (s2 & _c)
+            s2 = (s2 & ~_c) | (s1 & _c)
+            s1 = (s1 & ~_c) | (s0 & _c)
+            s0 = s0 & ~_c
 
-    def play(self, obj):
-        self.event = Clock.schedule_interval(self.next_step, 0.5)
+        self.cells = (~self.cells & s3) | (self.cells & (s2 | s3))
 
-    def stop(self, obj):
-        Clock.unschedule(self.event)
-
-    def random(self, obj):
-        self.core.randomize()
-        self.update_grid()
-
-    def next_step(self, t):
-        self.core.next_step()
-        self.update_grid()
-
-    def update_grid(self):
-        self.canvas.clear()
-        cols, rows = self.core.cols, self.core.rows
-        size = self.size[0] / cols, self.size[1] / rows
-        with self.canvas:
-            Color(0, 1, 0, 0.8)
-            field = list(product(range(cols), range(rows)))
-            cells = map(lambda p: self.create_cell(*p, *size), field)
-            list(cells)
-
-    def create_cell(self, x, y, w, h):
-        if self.core[x, y]:
-            _x = x * w + self.pos[0]
-            _y = self.height - (y + 1) * h + self.pos[1]
-            return Ellipse(size=(w, h), pos=(_x, _y))
+    def randomize(self):
+        length = self.cells.length()
+        for i in range(length):
+            self.cells[i] = randrange(100) > 80
 
 
-class GameOfLife(BoxLayout):
-    core = GameOfLifeCore(60, 40)
-    cell_grid = ObjectProperty()
-    operate = ObjectProperty()
-    menu = ObjectProperty()
+class Mask:
 
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.set_core()
-        self.operate.bind(on_play=self.cell_grid.play)
-        self.operate.bind(on_stop=self.cell_grid.stop)
-        self.operate.bind(on_random=self.cell_grid.random)
-        self.operate.bind(on_menu=self.menu.toggle)
+    def __init__(self, cols, rows):
+        self.cols = cols
+        self.rows = rows
 
-    # Panelクラスを継承しているクラスにcoreをセットする
-    def set_core(self):
-        for key in GameOfLife.__dict__.keys():
-            panel = getattr(self, key)
-            if isinstance(panel, Panel):
-                panel.set_core(self.core)
+        self.left_mask = self._create_left()
+        self.right_mask = self._create_right()
+        self.up_mask = self._create_up()
+        self.down_mask = self._create_down()
+        self.up_left_mask = self.left_mask & self.up_mask
+        self.down_left_mask = self.left_mask & self.down_mask
+        self.up_right_mask = self.right_mask & self.up_mask
+        self.down_right_mask = self.right_mask & self.down_mask
 
+    def left(self, cells):
+        return (cells << 1) & self.left_mask
 
-class GameOfLifeApp(App):
+    def right(self, cells):
+        return (cells >> 1) & self.right_mask
 
-    def build(self):
-        return GameOfLife()
+    def up(self, cells):
+        return (cells << self.cols) & self.up_mask
 
+    def down(self, cells):
+        return (cells >> self.cols) & self.up_mask
 
-if __name__ == '__main__':
-    resource_add_path(resource_path())
+    def up_left(self, cells):
+        return (cells << (self.cols + 1)) & self.up_left_mask
 
-    cur_path = os.path.dirname(os.path.abspath(__file__))
-    load_style(cur_path + '/layouts/*')
+    def down_left(self, cells):
+        return (cells >> (self.cols - 1)) & self.down_left_mask
 
-    GameOfLifeApp().run()
+    def up_right(self, cells):
+        return (cells << (self.cols - 1)) & self.up_right_mask
+
+    def down_right(self, cells):
+        return (cells >> (self.cols + 1)) & self.down_right_mask
+
+    def _create_left(self):
+        mask = mybitarray(self.cols * self.rows)
+        mask.setall(True)
+        for i in range(self.rows):
+            mask[(i + 1) * self.cols - 1] = False
+        return mask
+
+    def _create_right(self):
+        mask = mybitarray(self.cols * self.rows)
+        mask.setall(True)
+        for i in range(self.rows):
+            mask[i * self.cols] = False
+        return mask
+
+    def _create_up(self):
+        mask = mybitarray(self.cols * self.rows)
+        mask.setall(True)
+        for i in range(self.cols):
+            mask[-i] = False
+        return mask
+
+    def _create_down(self):
+        mask = mybitarray(self.cols * self.rows)
+        mask.setall(True)
+        for i in range(self.cols):
+            mask[i] = False
+        return mask

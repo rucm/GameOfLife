@@ -3,7 +3,7 @@
 block_cipher = None
 
 
-a = Analysis(['src\\gameoflife.py'],
+a = Analysis(['src\\app.py'],
              pathex=['.'],
              binaries=[],
              datas=[('src/layouts/*', './layouts')],
