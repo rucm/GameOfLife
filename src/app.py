@@ -24,17 +24,19 @@ class Panel(BoxLayout):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
-    def set_core(self, core):
-        self.core = core
+    # イベント名と同名のメソッドを検索してバインド
+    def bind_all(self, obj):
+        for e in self.event_list:
+            _e = e.lstrip('on_')
+            if _e not in dir(obj):
+                continue
+            self.bind(**{e: getattr(obj, _e)})
 
 
 class OperatePanel(Panel):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-
-    def on_menu(self):
-        pass
 
     def on_play(self):
         self.ids['play'].disabled = True
@@ -44,7 +46,10 @@ class OperatePanel(Panel):
         self.ids['play'].disabled = False
         self.ids['stop'].disabled = True
 
-    def on_random(self):
+    def on_randomize(self):
+        pass
+
+    def on_toggle_menu(self):
         pass
 
 
@@ -54,7 +59,7 @@ class MenuPanel(Panel):
         super(MenuPanel, self).__init__(**kwargs)
         self.state = 0
 
-    def toggle(self, ed):
+    def toggle(self):
         state_list = ['in', 'out']
         method = 'slide_{}'.format(state_list[self.state])
         getattr(self, method)()
@@ -78,17 +83,18 @@ class MenuPanel(Panel):
 
 
 class CellGridPanel(Panel):
+    core = Core(60, 40)
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
-    def play(self, obj):
+    def play(self):
         self.event = Clock.schedule_interval(self.next_step, 0.1)
 
-    def stop(self, obj):
+    def stop(self):
         Clock.unschedule(self.event)
 
-    def randomize(self, obj):
+    def randomize(self):
         self.core.randomize()
         self.update_grid()
 
@@ -114,25 +120,25 @@ class CellGridPanel(Panel):
 
 
 class GameOfLife(BoxLayout):
-    core = Core(60, 40)
     cell_grid = ObjectProperty()
     operate = ObjectProperty()
     menu = ObjectProperty()
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.set_core()
-        self.operate.bind(on_play=self.cell_grid.play)
-        self.operate.bind(on_stop=self.cell_grid.stop)
-        self.operate.bind(on_random=self.cell_grid.randomize)
-        self.operate.bind(on_menu=self.menu.toggle)
+        self.operate.bind_all(self)
 
-    # Panelクラスを継承しているクラスにcoreをセットする
-    def set_core(self):
-        for key in GameOfLife.__dict__.keys():
-            panel = getattr(self, key)
-            if isinstance(panel, Panel):
-                panel.set_core(self.core)
+    def play(self, *args, **kwargs):
+        self.cell_grid.play()
+
+    def stop(self, *args, **kwargs):
+        self.cell_grid.stop()
+
+    def randomize(self, *args, **kwargs):
+        self.cell_grid.randomize()
+
+    def toggle_menu(self, *args, **kwargs):
+        self.menu.toggle()
 
 
 class GameOfLifeApp(App):

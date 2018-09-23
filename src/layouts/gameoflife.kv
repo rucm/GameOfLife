@@ -17,10 +17,10 @@
         on_press: root.dispatch('on_stop')
     ImageButton:
         source: 'images/random.png'
-        on_press: root.dispatch('on_random')
+        on_press: root.dispatch('on_randomize')
     ImageButton:
         source: 'images/menu.png'
-        on_press: root.dispatch('on_menu')
+        on_press: root.dispatch('on_toggle_menu')
 
 <MenuPanel>:
     size_hint: 0.32, 1.0
