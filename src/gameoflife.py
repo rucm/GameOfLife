@@ -42,6 +42,9 @@ class OperatePanel(Panel):
     def on_stop(self):
         pass
 
+    def on_random(self):
+        pass
+
 
 class MenuPanel(Panel):
 
@@ -77,22 +80,29 @@ class CellGridPanel(Panel):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
-    def random_init(self, obj):
+    def play(self, obj):
+        self.event = Clock.schedule_interval(self.next_step, 0.5)
+
+    def stop(self, obj):
+        Clock.unschedule(self.event)
+
+    def random(self, obj):
         self.core.randomize()
         self.update_grid()
 
-    def next_step(self, obj):
+    def next_step(self, t):
         self.core.next_step()
         self.update_grid()
 
     def update_grid(self):
         self.canvas.clear()
-        w, h = self.size[0] / self.core.cols, self.size[1] / self.core.rows
+        cols, rows = self.core.cols, self.core.rows
+        size = self.size[0] / cols, self.size[1] / rows
         with self.canvas:
             Color(0, 1, 0, 0.8)
-            field = list(product(range(self.core.cols), range(self.core.rows)))
-            cells = map(lambda coords: self.create_cell(*coords, w, h), field)
-            [c for c in cells if c is not None]
+            field = list(product(range(cols), range(rows)))
+            cells = map(lambda p: self.create_cell(*p, *size), field)
+            list(cells)
 
     def create_cell(self, x, y, w, h):
             if self.core[x, y]:
@@ -102,7 +112,7 @@ class CellGridPanel(Panel):
 
 
 class GameOfLife(BoxLayout):
-    core = GameOfLifeCore(120, 80)
+    core = GameOfLifeCore(60, 40)
     cell_grid = ObjectProperty()
     operate = ObjectProperty()
     menu = ObjectProperty()
@@ -110,9 +120,10 @@ class GameOfLife(BoxLayout):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.set_core()
+        self.operate.bind(on_play=self.cell_grid.play)
+        self.operate.bind(on_stop=self.cell_grid.stop)
+        self.operate.bind(on_random=self.cell_grid.random)
         self.operate.bind(on_menu=self.menu.toggle)
-        self.operate.bind(on_play=self.cell_grid.random_init)
-        self.operate.bind(on_stop=self.cell_grid.next_step)
 
     # Panelクラスを継承しているクラスにcoreをセットする
     def set_core(self):
