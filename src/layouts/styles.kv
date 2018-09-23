@@ -15,6 +15,11 @@
         pos: root.pos
         size: root.size
 
+<ToggleImageButton@ImageButton>:
+    normal: ''
+    down: ''
+    source: self.down if self.disabled else self.normal
+
 <Panel>:
     pos: self.parent.pos
     canvas.before:
