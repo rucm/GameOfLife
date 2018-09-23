@@ -92,7 +92,12 @@ class CellGridPanel(Panel):
         self.event = Clock.schedule_interval(self.next_step, 0.1)
 
     def stop(self):
-        Clock.unschedule(self.event)
+        if self.event is not None:
+            Clock.unschedule(self.event)
+
+    def restart(self):
+        self.stop()
+        self.play()
 
     def randomize(self):
         self.core.randomize()
