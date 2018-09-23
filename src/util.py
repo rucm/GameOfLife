@@ -34,6 +34,7 @@ def register_event(handler):
         event_list = [e for e in dir(self.__class__) if pattern.match(e)]
         for e in event_list:
             self.register_event_type(e)
+        self.event_list = event_list
         return handler(self, **kwargs)
 
     return wrapper
