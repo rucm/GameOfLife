@@ -39,6 +39,9 @@ class Panel(BoxLayout):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
+    def set_core(self, core):
+        self.core = core
+
     # イベント名と同名のメソッドを検索してバインド
     def bind_all(self, obj):
         for e in self.event_list:
@@ -98,13 +101,21 @@ class MenuPanel(Panel):
 
 
 class CellGridPanel(Panel):
-    core = Core(60, 40)
+    _speed = 5.0
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
+    @property
+    def speed(self):
+        return self._speed
+
+    @speed.setter
+    def speed(self, value):
+        self._speed = float(value)
+
     def play(self):
-        self.event = Clock.schedule_interval(self.next_step, 0.1)
+        self.event = Clock.schedule_interval(self.next_step, 1.0 / self.speed)
 
     def stop(self):
         if self.event is not None:
@@ -148,6 +159,13 @@ class GameOfLife(BoxLayout):
         super().__init__(**kwargs)
         self.operate.bind_all(self)
 
+    # Panelクラスを継承しているクラスにcoreをセットする
+    def set_core(self, core):
+        for key in GameOfLife.__dict__.keys():
+            panel = getattr(self, key)
+            if isinstance(panel, Panel):
+                panel.set_core(core)
+
     def play(self, *args, **kwargs):
         self.cell_grid.play()
 
@@ -162,17 +180,32 @@ class GameOfLife(BoxLayout):
 
 
 class GameOfLifeApp(App):
+    core = Core(60, 40)
+    gameoflife = None
 
     def build(self):
-        return GameOfLife()
+        self.gameoflife = GameOfLife()
+        self.gameoflife.set_core(self.core)
+        Logger.info(self.config.get('cell_grid', 'speed'))
+        return self.gameoflife
 
     def build_config(self, config):
-        config.setdefaults('game', {
-            'speed': 0.1,
+        config.setdefaults('cell_grid', {
+            'speed': 5,
         })
 
     def build_settings(self, settings):
-        settings.add_json_panel('game', self.config, data=game)
+        settings.add_json_panel('Game', self.config, data=game)
+
+    def on_config_change(self, config, section, key, value):
+        Logger.debug('Config: {}:{}'.format(section, key))
+        if config is not self.config:
+            return
+        try:
+            panel = getattr(self.gameoflife, section)
+            setattr(panel, key, value)
+        except:
+            pass
 
 
 if __name__ == '__main__':
