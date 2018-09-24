@@ -34,6 +34,9 @@ class Core(object):
     def reset(self):
         self.cells.setall(False)
 
+    def count_of(self, state):
+        return self.cells.count(state)
+
     def next_step(self):
         c = [self.mask.left(self.cells)]
         c.append(self.mask.right(self.cells))
