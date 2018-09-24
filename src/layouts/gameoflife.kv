@@ -25,7 +25,18 @@
 <MenuPanel>:
     size_hint: 0.32, 1.0
     pos_hint: {'right': 2}
-
+    padding: 5, 5, 5, 5
+    BoxLayout:
+        orientation: 'vertical'
+        pos_hint: {'top': 1}
+        size_hint_y: None
+        height: 60
+        Label:
+            text_size: self.size
+            halign: 'left'
+            text: 'Speed'
+        FloatInput:
+            multiline: False
 
 <CellGridPanel>:
     size: (780, 520)
