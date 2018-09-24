@@ -17,6 +17,7 @@ from kivy.uix.image import Image
 from kivy.uix.textinput import TextInput
 
 from gameoflife import Core
+from settings import game
 from util import *
 
 
@@ -164,6 +165,14 @@ class GameOfLifeApp(App):
 
     def build(self):
         return GameOfLife()
+
+    def build_config(self, config):
+        config.setdefaults('game', {
+            'speed': 0.1,
+        })
+
+    def build_settings(self, settings):
+        settings.add_json_panel('game', self.config, data=game)
 
 
 if __name__ == '__main__':
