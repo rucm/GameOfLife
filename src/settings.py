@@ -4,12 +4,12 @@ import json
 game = json.dumps([
     {
         'type': 'title',
-        'title': 'Game of Life'
+        'title': 'General'
     },
     {
         'type': 'numeric',
         'title': 'Speed',
-        'section': 'game',
+        'section': 'cell_grid',
         'desc': 'Number of updates per second',
         'key': 'speed'
     }
