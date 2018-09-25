@@ -67,6 +67,21 @@ class Core(object):
             self.cells[i] = randrange(100) > 80
 
 
+class Config:
+    __speed = 5.0
+
+    @property
+    def speed(self):
+        return self.__speed
+
+    @speed.setter
+    def speed(self, value):
+        v = value
+        if not isinstance(value, float):
+            v = float(v)
+        self.__speed = v
+
+
 class Mask:
 
     def __init__(self, cols, rows):
