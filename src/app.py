@@ -82,7 +82,7 @@ class MenuPanel(Panel):
     def __init__(self, **kwargs):
         super(MenuPanel, self).__init__(**kwargs)
         self.state = 0
-        Clock.schedule_interval(self.update_info, 0.5)
+        Clock.schedule_interval(self.update_info, 1)
 
     def set_config(self, config):
         super().set_config(config)
@@ -110,7 +110,6 @@ class MenuPanel(Panel):
         animation.start(self)
 
     def update_info(self, t):
-        Logger.debug('{}'.format(self.info.items()))
         for k, v in self.info.items():
             Logger.debug('{}:{}'.format(k, v))
             if k not in self.ids:
@@ -230,10 +229,8 @@ class GameOfLifeApp(App):
         Logger.debug('Config: {}:{}'.format(section, key))
         if config is not self.config:
             return
-        setattr(self.config, key, value)
+        setattr(self.gol_config, key, value)
         self.gol_info[key] = value
-        # panel = getattr(self.gameoflife, section)
-        # setattr(panel, key, value)
 
 
 if __name__ == '__main__':
