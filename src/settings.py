@@ -1,7 +1,7 @@
 import json
 
 
-game = json.dumps([
+general = json.dumps([
     {
         'type': 'title',
         'title': 'General'
@@ -9,8 +9,9 @@ game = json.dumps([
     {
         'type': 'numeric',
         'title': 'Speed',
-        'section': 'cell_grid',
+        'section': 'gameoflife',
         'desc': 'Number of updates per second',
         'key': 'speed'
     }
 ])
+

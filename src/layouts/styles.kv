@@ -28,3 +28,18 @@
         Rectangle:
             size: self.size
             pos: self.pos
+
+<Information@BoxLayout>:
+    orientation: 'vertical'
+    size_hint_y: None
+    height: 60
+    title: ''
+    value: ''
+    Label:
+        text_size: self.size
+        halign: 'left'
+        text: root.title
+    TextInput:
+        readonly: True
+        multiline: False
+        text: root.value
