@@ -107,7 +107,7 @@ class Mask:
         return (cells << self.cols) & self.up_mask
 
     def down(self, cells):
-        return (cells >> self.cols) & self.up_mask
+        return (cells >> self.cols) & self.down_mask
 
     def up_left(self, cells):
         return (cells << (self.cols + 1)) & self.up_left_mask
