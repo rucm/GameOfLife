@@ -111,7 +111,6 @@ class MenuPanel(Panel):
 
     def update_info(self, t):
         for k, v in self.info.items():
-            Logger.debug('{}:{}'.format(k, v))
             if k not in self.ids:
                 continue
             self.ids[k].value = '{}'.format(v)
@@ -195,7 +194,7 @@ class GameOfLife(BoxLayout):
 
 
 class GameOfLifeApp(App):
-    gol_core = gol.Core(60, 40)
+    gol_core = gol.Core()
     gol_config = gol.Config()
     gol_info = {}
     gameoflife = None
@@ -220,6 +219,8 @@ class GameOfLifeApp(App):
     def build_config(self, config):
         config.setdefaults('gameoflife', {
             'speed': 5,
+            'cols': 60,
+            'rows': 40
         })
 
     def build_settings(self, settings):

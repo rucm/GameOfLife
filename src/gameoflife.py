@@ -16,12 +16,8 @@ class mybitarray(bitarray):
 
 class Core(object):
 
-    def __init__(self, cols, rows):
-        self.mask = Mask(cols, rows)
-        self.cols = cols
-        self.rows = rows
-        self.cells = mybitarray(cols * rows)
-        self.cells.setall(False)
+    def __init__(self):
+        self.set_size(60, 40)
 
     def __getitem__(self, coords):
         index = coords[1] * self.cols + coords[0]
@@ -30,6 +26,13 @@ class Core(object):
     def __setitem__(self, coords, value):
         index = coords[1] * self.cols + coords[0]
         self.cells[index] = value
+
+    def set_size(self, cols, rows):
+        self.mask = Mask(cols, rows)
+        self.cols = cols
+        self.rows = rows
+        self.cells = mybitarray(cols * rows)
+        self.cells.setall(False)
 
     def reset(self):
         self.cells.setall(False)
@@ -69,6 +72,8 @@ class Core(object):
 
 class Config:
     __speed = 5.0
+    __cols = 60
+    __rows = 40
 
     @property
     def speed(self):
@@ -80,6 +85,28 @@ class Config:
         if not isinstance(value, float):
             v = float(v)
         self.__speed = v
+
+    @property
+    def cols(self):
+        return self.__cols
+
+    @cols.setter
+    def cols(self, value):
+        v = value
+        if not isinstance(value, int):
+            v = int(v)
+        self.__cols = v
+
+    @property
+    def rows(self):
+        return self.__rows
+
+    @rows.setter
+    def rows(self, value):
+        v = value
+        if not isinstance(value, int):
+            v = int(v)
+        self.__rows = v
 
 
 class Mask:
