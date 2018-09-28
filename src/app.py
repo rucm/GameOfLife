@@ -21,18 +21,6 @@ from settings import general
 from util import *
 
 
-class FloatInput(TextInput):
-    pat = re.compile('[^0-9]')
-
-    def insert_text(self, substring, from_undo=False):
-        pat = self.pat
-        if '.' in self.text:
-            s = re.sub(pat, '', substring)
-        else:
-            s = '.'.join([re.sub(pat, '', s) for s in substring.split('.', 1)])
-        return super(FloatInput, self).insert_text(s, from_undo=from_undo)
-
-
 class Panel(BoxLayout):
 
     @register_event
@@ -144,8 +132,7 @@ class CellGridPanel(Panel):
         self.update_grid()
 
     def update_grid(self):
-        self.info['living_cells'] = self.core.count_of(True)
-        self.info['dead_cells'] = self.core.count_of(False)
+        self.record_cells()
         self.canvas.clear()
         cols, rows = self.core.cols, self.core.rows
         size = self.size[0] / cols, self.size[1] / rows
@@ -160,6 +147,10 @@ class CellGridPanel(Panel):
             _x = x * w + self.pos[0]
             _y = self.height - (y + 1) * h + self.pos[1]
             return Ellipse(size=(w, h), pos=(_x, _y))
+
+    def record_cells(self):
+        self.info['living_cells'] = self.core.count_of(True)
+        self.info['dead_cells'] = self.core.count_of(False)
 
 
 class GameOfLife(BoxLayout):
