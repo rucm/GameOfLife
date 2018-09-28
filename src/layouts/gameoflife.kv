@@ -19,10 +19,10 @@
         source: 'images/random.png'
         on_press: root.dispatch('on_randomize')
     ImageButton:
-        source: 'images/menu.png'
-        on_press: root.dispatch('on_toggle_menu')
+        source: 'images/info.png'
+        on_press: root.dispatch('on_toggle_info')
 
-<MenuPanel>:
+<InfoPanel>:
     size_hint: 0.32, 1.0
     pos_hint: {'right': 2}
     padding: 5, 5, 5, 5
@@ -47,7 +47,7 @@
 
 <GameOfLife>:
     cell_grid: cell_grid
-    menu: menu
+    info: info
     operate: operate
     canvas.before:
         Rectangle:
@@ -57,7 +57,7 @@
     FloatLayout:
         CellGridPanel:
             id: cell_grid
-        MenuPanel:
-            id: menu
+        InfoPanel:
+            id: info
         OperatePanel:
             id: operate

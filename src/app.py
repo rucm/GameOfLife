@@ -61,21 +61,21 @@ class OperatePanel(Panel):
     def on_randomize(self):
         pass
 
-    def on_toggle_menu(self):
+    def on_toggle_info(self):
         pass
 
 
-class MenuPanel(Panel):
+class InfoPanel(Panel):
 
     def __init__(self, **kwargs):
-        super(MenuPanel, self).__init__(**kwargs)
+        super(InfoPanel, self).__init__(**kwargs)
         self.state = 0
         Clock.schedule_interval(self.update_info, 1)
 
     def set_config(self, config):
         super().set_config(config)
 
-    def toggle(self):
+    def toggle_info(self, *args, **kwargs):
         state_list = ['in', 'out']
         method = 'slide_{}'.format(state_list[self.state])
         getattr(self, method)()
@@ -165,7 +165,7 @@ class CellGridPanel(Panel):
 class GameOfLife(BoxLayout):
     cell_grid = ObjectProperty()
     operate = ObjectProperty()
-    menu = ObjectProperty()
+    info = ObjectProperty()
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
