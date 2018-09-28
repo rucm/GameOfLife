@@ -109,32 +109,32 @@ class CellGridPanel(Panel):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
-    def play(self):
+    def play(self, *args, **kwargs):
         self.update_cells_size()
         self.event = Clock.schedule_interval(
             self.next_step,
             1.0 / self.config.speed
         )
 
-    def stop(self):
+    def stop(self, *args, **kwargs):
         if self.event is not None:
-            Clock.unschedule(self.event)
             self.update_cells_size()
+            Clock.unschedule(self.event)
 
-    def restart(self):
+    def restart(self, *args, **kwargs):
         self.stop()
         self.play()
 
-    def randomize(self):
+    def randomize(self, *args, **kwargs):
         self.update_cells_size()
         self.core.randomize()
         self.update_grid()
 
-    def next_step(self, t):
+    def next_step(self, *args, **kwargs):
         self.core.next_step()
         self.update_grid()
 
-    def update_grid(self):
+    def update_grid(self, *args, **kwargs):
         self.record_cells()
         self.canvas.clear()
         cols, rows = self.core.cols, self.core.rows
@@ -155,7 +155,7 @@ class CellGridPanel(Panel):
         self.info['living_cells'] = self.core.count_of(True)
         self.info['dead_cells'] = self.core.count_of(False)
 
-    def update_cells_size(self):
+    def update_cells_size(self, *args, **kwargs):
         cols_flag = self.core.cols != self.config.cols
         rows_flag = self.core.rows != self.config.rows
         if cols_flag or rows_flag:
@@ -169,7 +169,8 @@ class GameOfLife(BoxLayout):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.operate.bind_all(self)
+        self.operate.bind_all(self.cell_grid)
+        self.operate.bind_all(self.info)
 
     # Panelクラスを継承しているクラスの初期化
     def initialize_panel(self, core, config, info):
@@ -179,18 +180,6 @@ class GameOfLife(BoxLayout):
                 panel.set_core(core)
                 panel.set_config(config)
                 panel.set_info(info)
-
-    def play(self, *args, **kwargs):
-        self.cell_grid.play()
-
-    def stop(self, *args, **kwargs):
-        self.cell_grid.stop()
-
-    def randomize(self, *args, **kwargs):
-        self.cell_grid.randomize()
-
-    def toggle_menu(self, *args, **kwargs):
-        self.menu.toggle()
 
 
 class GameOfLifeApp(App):
