@@ -27,17 +27,31 @@
     pos_hint: {'right': 2}
     padding: 5, 5, 5, 5
     GridLayout:
-        rows: 10
+        rows: 4
         cols: 1
         Information:
             id: speed
             title: 'Speed'
-        Information:
-            id: living_cells
-            title: 'Liveing Cells'
-        Information:
-            id: dead_cells
-            title: 'Dead Cells'
+        BoxLayout:
+            orientation: 'horizontal'
+            height: 60
+            size_hint_y: None
+            Information:
+                id: cols
+                title: 'Cols'
+            Information:
+                id: rows
+                title: 'Rows'
+        BoxLayout:
+            orientation: 'horizontal'
+            height: 60
+            size_hint_y: None
+            Information:
+                id: living_cells
+                title: 'Liveing Cells'
+            Information:
+                id: dead_cells
+                title: 'Dead Cells'
 
 <CellGridPanel>:
     size: (780, 520)
