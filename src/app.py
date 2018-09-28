@@ -66,10 +66,10 @@ class OperatePanel(Panel):
 
 
 class InfoPanel(Panel):
+    toggle_state = 0
 
     def __init__(self, **kwargs):
         super(InfoPanel, self).__init__(**kwargs)
-        self.state = 0
         Clock.schedule_interval(self.update_info, 1)
 
     def set_config(self, config):
@@ -77,9 +77,9 @@ class InfoPanel(Panel):
 
     def toggle_info(self, *args, **kwargs):
         state_list = ['in', 'out']
-        method = 'slide_{}'.format(state_list[self.state])
+        method = 'slide_{}'.format(state_list[self.toggle_state])
         getattr(self, method)()
-        self.state = (self.state + 1) % 2
+        self.toggle_state = (self.toggle_state + 1) % 2
 
     def slide_in(self):
         animation = Animation(
