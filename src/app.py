@@ -110,6 +110,7 @@ class CellGridPanel(Panel):
         super().__init__(**kwargs)
 
     def play(self):
+        self.update_cells_size()
         self.event = Clock.schedule_interval(
             self.next_step,
             1.0 / self.config.speed
@@ -118,12 +119,14 @@ class CellGridPanel(Panel):
     def stop(self):
         if self.event is not None:
             Clock.unschedule(self.event)
+            self.update_cells_size()
 
     def restart(self):
         self.stop()
         self.play()
 
     def randomize(self):
+        self.update_cells_size()
         self.core.randomize()
         self.update_grid()
 
@@ -151,6 +154,12 @@ class CellGridPanel(Panel):
     def record_cells(self):
         self.info['living_cells'] = self.core.count_of(True)
         self.info['dead_cells'] = self.core.count_of(False)
+
+    def update_cells_size(self):
+        cols_flag = self.core.cols != self.config.cols
+        rows_flag = self.core.rows != self.config.rows
+        if cols_flag or rows_flag:
+            self.core.set_size(self.config.cols, self.config.rows)
 
 
 class GameOfLife(BoxLayout):
