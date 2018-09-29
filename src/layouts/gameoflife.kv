@@ -3,7 +3,8 @@
 <OperatePanel>:
     padding: [10, 10, 10, 10]
     size_hint: 0.25, 0.1
-    pos_hint: {'bottom': 1, 'center_x': 0.5}
+    size_hint_max_y: 60
+    pos_hint: {'center_x': 0.5}
     ToggleImageButton:
         id: play
         normal: 'images/play.png'
@@ -24,11 +25,15 @@
 
 <InfoPanel>:
     size_hint: 0.32, 1.0
+    size_hint_max_x: 256
     pos_hint: {'right': 2}
     padding: 5, 5, 5, 5
     GridLayout:
         rows: 4
         cols: 1
+        Information:
+            id: update_grid
+            title: 'Draw time'
         Information:
             id: speed
             title: 'Speed'
@@ -54,9 +59,10 @@
                 title: 'Dead Cells'
 
 <CellGridPanel>:
-    size: (780, 520)
-    size_hint: (None, None)
-    pos_hint: {'center_x': 0.5, 'center_y': 0.55}
+    width: self.height * 3 / 2
+    size_hint_y: 0.9
+    size_hint_x: None
+    pos_hint: {'center_x': 0.5}
 
 
 <GameOfLife>:
@@ -69,9 +75,12 @@
             pos: self.pos
             size: self.size
     FloatLayout:
-        CellGridPanel:
-            id: cell_grid
+        BoxLayout:
+            orientation: 'vertical'
+            spacing: 10
+            CellGridPanel:
+                id: cell_grid
+            OperatePanel:
+                id: operate
         InfoPanel:
             id: info
-        OperatePanel:
-            id: operate

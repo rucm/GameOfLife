@@ -132,7 +132,14 @@ class CellGridPanel(Panel):
 
     def next_step(self, *args, **kwargs):
         self.core.next_step()
+
+        time = timeit.timeit(self.update_grid, number=1)
+        self.info['update_grid'] = '{:.3f}'.format(time)
         self.update_grid()
+
+    def record_cells(self):
+        self.info['living_cells'] = self.core.count_of(True)
+        self.info['dead_cells'] = self.core.count_of(False)
 
     def update_grid(self, *args, **kwargs):
         self.record_cells()
@@ -150,10 +157,6 @@ class CellGridPanel(Panel):
             _x = x * w + self.pos[0]
             _y = self.height - (y + 1) * h + self.pos[1]
             return Ellipse(size=(w, h), pos=(_x, _y))
-
-    def record_cells(self):
-        self.info['living_cells'] = self.core.count_of(True)
-        self.info['dead_cells'] = self.core.count_of(False)
 
     def update_cells_size(self, *args, **kwargs):
         cols_flag = self.core.cols != self.config.cols
