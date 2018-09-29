@@ -36,6 +36,9 @@ class Panel(BoxLayout):
     def set_info(self, info):
         self.info = info
 
+    def initialize(self):
+        pass
+
     # イベント名と同名のメソッドを検索してバインド
     def bind_all(self, obj):
         for e in self.event_list:
@@ -109,6 +112,9 @@ class CellGridPanel(Panel):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
+    def initialize(self):
+        self.bind(pos=self.update_grid, size=self.update_grid)
+
     def play(self, *args, **kwargs):
         self.update_cells_size()
         self.event = Clock.schedule_interval(
@@ -164,6 +170,9 @@ class CellGridPanel(Panel):
         if cols_flag or rows_flag:
             self.core.set_size(self.config.cols, self.config.rows)
 
+    def update_rect(self, *args, **kwargs):
+        Logger.debug('Rect')
+
 
 class GameOfLife(BoxLayout):
     cell_grid = ObjectProperty()
@@ -183,6 +192,7 @@ class GameOfLife(BoxLayout):
                 panel.set_core(core)
                 panel.set_config(config)
                 panel.set_info(info)
+                panel.initialize()
 
 
 class GameOfLifeApp(App):
