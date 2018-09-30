@@ -27,11 +27,19 @@ def register_event(handler):
     __init__メソッドに付けるデコレータ
     """
 
+    excludes = [
+        'on_opacity',
+        'on_touch_down',
+        'on_touch_move',
+        'on_touch_up'
+    ]
+
     def wrapper(self, **kwargs):
         if not isinstance(self, EventDispatcher):
             raise TypeError('This class does not inherit EventDispatcher')
         pattern = re.compile('on_')
         event_list = [e for e in dir(self.__class__) if pattern.match(e)]
+        event_list = [e for e in event_list if e not in excludes]
         for e in event_list:
             self.register_event_type(e)
         self.event_list = event_list
