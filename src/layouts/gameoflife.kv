@@ -16,6 +16,9 @@
         normal: 'images/stop.png'
         down: 'images/stop_down.png'
         on_press: root.dispatch('on_stop')
+    ToggleImageButton:
+        source: 'images/next.png'
+        on_press: root.dispatch('on_next_step')
     ImageButton:
         source: 'images/random.png'
         on_press: root.dispatch('on_randomize')

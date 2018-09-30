@@ -42,7 +42,7 @@ class Panel(BoxLayout):
     # イベント名と同名のメソッドを検索してバインド
     def bind_all(self, obj):
         for e in self.event_list:
-            _e = e.lstrip('on_')
+            _e = re.search('^on_(.*)', e).group(1)
             if _e not in dir(obj):
                 continue
             self.bind(**{e: getattr(obj, _e)})
@@ -56,6 +56,9 @@ class OperatePanel(Panel):
     def on_play(self):
         self.ids['play'].disabled = True
         self.ids['stop'].disabled = False
+
+    def on_next_step(self):
+        pass
 
     def on_stop(self):
         self.ids['play'].disabled = False
