@@ -138,7 +138,6 @@ class CellGridPanel(Panel):
 
     def next_step(self, *args, **kwargs):
         self.core.next_step()
-
         time = timeit.timeit(self.update_grid, number=1)
         self.info['update_grid'] = '{:.3f}'.format(time)
         self.update_grid()
@@ -169,9 +168,6 @@ class CellGridPanel(Panel):
         rows_flag = self.core.rows != self.config.rows
         if cols_flag or rows_flag:
             self.core.set_size(self.config.cols, self.config.rows)
-
-    def update_rect(self, *args, **kwargs):
-        Logger.debug('Rect')
 
 
 class GameOfLife(BoxLayout):
