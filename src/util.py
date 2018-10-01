@@ -29,7 +29,6 @@ def register_event(handler):
     'on_'で始まるメソッドを探してイベントとして登録する
     __init__メソッドに付けるデコレータ
     """
-
     excludes = [
         'on_opacity',
         'on_touch_down',
@@ -47,5 +46,16 @@ def register_event(handler):
             self.register_event_type(e)
         self.event_list = event_list
         return handler(self, **kwargs)
+
+    return wrapper
+
+
+def collision_check(handler):
+
+    def wrapper(self, *args, **kwargs):
+        event = args[0]
+        if not self.collide_point(*event.pos):
+            return None
+        return handler(self, *args, **kwargs)
 
     return wrapper
