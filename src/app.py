@@ -172,6 +172,17 @@ class CellGridPanel(Panel):
         if cols_flag or rows_flag:
             self.core.set_size(self.config.cols, self.config.rows)
 
+    def put_cell(self, event, state):
+        pos = event.pos[0] - self.pos[0], event.pos[1] - self.pos[1]
+        size = self.size[0] / self.core.cols, self.size[1] / self.core.rows
+        grid = int(pos[0] / size[0]), int((self.height - pos[1]) / size[1])
+        self.core[grid] = not self.core[grid]
+        self.update_grid()
+
+    @collision_check
+    def on_touch_down(self, event):
+        self.put_cell(event, True)
+
 
 class GameOfLife(BoxLayout):
     cell_grid = ObjectProperty()
