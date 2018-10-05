@@ -252,8 +252,6 @@ class GameOfLifeApp(App):
 
 if __name__ == '__main__':
     resource_add_path(resource_path())
-
-    cur_path = os.path.dirname(os.path.abspath(__file__))
-    load_style(cur_path + '/layouts/*')
+    load_style(resource_path() + '/layouts/*')
 
     GameOfLifeApp().run()

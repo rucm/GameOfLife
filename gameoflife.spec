@@ -3,10 +3,10 @@
 block_cipher = None
 
 
-a = Analysis(['src\\app.py'],
-             pathex=['.'],
+a = Analysis(['src/app.py'],
+             pathex=['./src'],
              binaries=[],
-             datas=[('src/layouts/*', './layouts')],
+             datas=[('src/images/*', './images'), ('src/layouts/*', './layouts')],
              hiddenimports=[],
              hookspath=[],
              runtime_hooks=[],
