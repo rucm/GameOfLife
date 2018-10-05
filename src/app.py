@@ -183,6 +183,10 @@ class CellGridPanel(Panel):
     def on_touch_down(self, event):
         self.put_cell(event, True)
 
+    @collision_check
+    def on_touch_move(self, event):
+        self.put_cell(event, True)
+
 
 class GameOfLife(BoxLayout):
     cell_grid = ObjectProperty()
